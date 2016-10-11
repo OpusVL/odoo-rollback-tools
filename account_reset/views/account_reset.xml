@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_account_reset_wizard" model="ir.ui.view">
+            <field name="name">Accounts Reset</field>
+            <field name="type">form</field>
+            <field name="model">account.reset.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="company_id" widget="selection"/>
+                        </group>
+                    </group>
+                    <p class="alert alert-danger">
+                        <strong>
+                        Clicking &quot;Reset accounts&quot; will unpost all
+                        accounting journal entries, invoices and, if applicable,
+                        payment vouchers for the selected company.
+                        </strong>
+                        <br />
+                        <field name="confirmed" class="oe_inline"/>
+                        <label for="confirmed"/>
+                    </p>
+                    <p>
+                        Please also be aware that only journal entries whose journal has
+                        'Allow Cancelling Entries' enabled will be unposted.
+                    </p>
+                    <footer>
+                        <button name="execute" string="Reset accounts"
+                                type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_account_reset_wizard" model="ir.actions.act_window">
+            <field name="name">Reset Accounts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.reset.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem parent="account.menu_finance_configuration"
+                  id="menuitem_reset_accounts"
+                  string="Reset Accounts"
+                  action="action_account_reset_wizard"/>
+    </data>
+</openerp>
