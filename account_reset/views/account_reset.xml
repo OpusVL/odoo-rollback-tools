@@ -12,6 +12,12 @@
                             <field name="company_id" widget="selection"/>
                         </group>
                     </group>
+                    <field name="have_uncancellable_journals" invisible="1"/>
+                    <p class="alert alert-warning" attrs="{'invisible': [('have_uncancellable_journals', '=', False)]}">
+                        Objects raised against the following journals cannot be cancelled, because the journals are
+                        configured to prevent cancellation.
+                        <field name="uncancellable_journal_ids" widget="many2many_tags"/>
+                    </p>
                     <p class="alert alert-danger">
                         <strong>
                         Clicking &quot;Reset accounts&quot; will unpost all
@@ -21,10 +27,6 @@
                         <br />
                         <field name="confirmed" class="oe_inline"/>
                         <label for="confirmed"/>
-                    </p>
-                    <p>
-                        Please also be aware that only journal entries whose journal has
-                        'Allow Cancelling Entries' enabled will be unposted.
                     </p>
                     <footer>
                         <button name="execute" string="Reset accounts"
