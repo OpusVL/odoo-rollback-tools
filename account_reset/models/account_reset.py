@@ -77,10 +77,11 @@ class AccountResetWizard(models.Model):
 
         log_data['prefix'] = "account reset {reset_id}:".format(**log_data)
         _logger.info("{prefix} started by: '{login}', company: {company_name}".format(**log_data))
-        self_log = self.with_context(log_data=log_data)
-        self_log._unpost_journal_entries()
-        self_log._unpost_invoices()
-        self_log._unpost_vouchers()
+        # selflog provides logging context
+        selflog = self.with_context(log_data=log_data)
+        selflog._unpost_journal_entries()
+        selflog._unpost_vouchers()
+        selflog._unpost_invoices()
         _logger.info('{prefix} finished'.format(**log_data))
         self.executed = True
 
