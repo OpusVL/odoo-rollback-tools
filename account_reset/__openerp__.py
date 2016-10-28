@@ -45,11 +45,6 @@
     When you select a company, you may get a warning about certain journals having unreconciliation disabled.
     If any journals whose postings you don't wish to preserve are in this list, then you will need to go to the journal
     and tick the box to allow unreconciliation of entries.
-    Note that the whole operation will fail if an invoice or voucher refers to an entry that is not reconciled, so any journals
-    referred to in invoices or refunds for suppliers or customers, and any payment vouchers, will need to be unreconcilable.
-
-    This is fine for our use cases so far, but patches are welcome to make the invoice and voucher cancellation operations
-    more choosey if that causes a problem.
 
     Once you are happy with your choices, you will need to tick the checkbox, and note that your request will be logged.
 
