@@ -30,7 +30,30 @@
     
     'category': 'Technical',
     
-    'description': """Automatically reset accounts ready for transition to live, for example,
+    'description': """Automatically reset accounts ready for transition to live, for example.
+
+    Once this module is installed, you need to grant permissions to those who are going to perform the accounts reset.
+    I suggest that once the user has done what they need with it, you then revoke those permissions.
+
+    The permission in question is 'Accounts reset'.  The user will also need the permissions that would normally
+    be necessary to unreconcile invoices, vouchers and journal entires manually (probably Accounting Manager).
+
+    There will be a new menu entry Accounting -> Configuration -> Reset Accounts.
+
+    Click that, and pick the company whose accounts you wish to reset.
+
+    When you select a company, you may get a warning about certain journals having unreconciliation disabled.
+    If any journals whose postings you don't wish to preserve are in this list, then you will need to go to the journal
+    and tick the box to allow unreconciliation of entries.
+    Note that the whole operation will fail if an invoice or voucher refers to an entry that is not reconciled, so any journals
+    referred to in invoices or refunds for suppliers or customers, and any payment vouchers, will need to be unreconcilable.
+
+    This is fine for our use cases so far, but patches are welcome to make the invoice and voucher cancellation operations
+    more choosey if that causes a problem.
+
+    Once you are happy with your choices, you will need to tick the checkbox, and note that your request will be logged.
+
+    Click the 'Reset Accounts' button.  Note that this operation, especially the voucher cancellation stage, is quite slow.
 """,
     'images': [
     ],
