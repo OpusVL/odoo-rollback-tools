@@ -66,23 +66,23 @@ class AccountResetWizard(models.Model):
             'company_name': company.name if company else '*unset*'
         }
         if not self.env.user.has_group('account_reset.group_allow_account_reset'):
-            _logger.warn("User '{login}' tried but does not have permission to reset accounts for '{company_name}'.  Add them to the Account Reset group if they should.".format(**log_data))
+            _logger.warn(u"User '{login}' tried but does not have permission to reset accounts for '{company_name}'.  Add them to the Account Reset group if they should.".format(**log_data))
             raise AccessError(_("You do not have permission to reset the accounts"))
         if self.executed:
-            raise Warning(_("Wizard record already executed"))
+            raise Warning(_(u"Wizard record already executed"))
         if not self.company_id:
-            raise Warning(_("Cannot reset accounts: You did not choose a company for whom the chart of accounts should be reset"))
+            raise Warning(_(u"Cannot reset accounts: You did not choose a company whose chart of accounts should be reset"))
         if not self.confirmed:
-            raise Warning(_("Cannot reset accounts: You did not tick the confirmation box"))
+            raise Warning(_(u"Cannot reset accounts: You did not tick the confirmation box"))
 
-        log_data['prefix'] = "account reset {reset_id}:".format(**log_data)
-        _logger.info("{prefix} started by: '{login}', company: {company_name}".format(**log_data))
+        log_data['prefix'] = u"account reset {reset_id}:".format(**log_data)
+        _logger.info(u"{prefix} started by: '{login}', company: {company_name}".format(**log_data))
         # selflog provides logging context
         selflog = self.with_context(log_data=log_data)
         selflog._unpost_journal_entries()
         selflog._unpost_vouchers()
         selflog._unpost_invoices()
-        _logger.info('{prefix} finished'.format(**log_data))
+        _logger.info(u'{prefix} finished'.format(**log_data))
         self.executed = True
 
     def _unpost_journal_entries(self):
@@ -90,23 +90,23 @@ class AccountResetWizard(models.Model):
         company = self.company_id
         log_data = self.env.context['log_data'].copy()
         journal_entries = self.env['account.move'].search([('state', '=', 'posted'), ('company_id', '=', company.id)])
-        _logger.info('{prefix} {count} Posted journal entries to cancel'.format(
+        _logger.info(u'{prefix} {count} Posted journal entries to cancel'.format(
             count=len(journal_entries), **log_data))
         for entry in journal_entries:
             entry_log_data = log_data.copy()
             entry_log_data.update(dict(entry_id=entry.id, entry_name=entry.name))
             if entry.journal_id.update_posted:
-                _logger.info('{prefix} Cancelling journal entry {entry_id} "{entry_name}"'.format(**entry_log_data))
+                _logger.info(u'{prefix} Cancelling journal entry {entry_id} "{entry_name}"'.format(**entry_log_data))
                 entry.button_cancel()
             else:
-                _logger.warn('{prefix} Skipping Journal entry {entry_id} "{entry_name}" - it is in uncancellable journal {journal_name}'.format(journal_name=entry.journal_id.name, **entry_log_data))
+                _logger.warn(u'{prefix} Skipping Journal entry {entry_id} "{entry_name}" - it is in uncancellable journal {journal_name}'.format(journal_name=entry.journal_id.name, **entry_log_data))
 
     def _unpost_invoices(self):
         self.ensure_one()
         company = self.company_id
         log_data = self.env.context['log_data'].copy()
         invoices = self.env['account.invoice'].search([('state', 'in', ['open', 'paid']), ('company_id', '=', company.id)])
-        _logger.info('{prefix} {count} invoices to cancel'.format(
+        _logger.info(u'{prefix} {count} invoices to cancel'.format(
             count=len(invoices), **log_data
         ))
         for invoice in invoices:
@@ -114,9 +114,9 @@ class AccountResetWizard(models.Model):
             inv_log_data.update(dict(invoice_name=invoice.name or "*no name*", invoice_id=invoice.id))
             journal = invoice.journal_id
             if not journal.update_posted:
-                _logger.info('{prefix} Skipping Invoice {invoice_id} "{invoice_name}" - it is in uncancellable journal {journal_name}'.format(journal_name=journal.name, **inv_log_data))
+                _logger.info(u'{prefix} Skipping Invoice {invoice_id} "{invoice_name}" - it is in uncancellable journal {journal_name}'.format(journal_name=journal.name, **inv_log_data))
                 continue
-            _logger.info('{prefix} cancelling invoice {invoice_id} "{invoice_name}"'.format(**inv_log_data))
+            _logger.info(u'{prefix} cancelling invoice {invoice_id} "{invoice_name}"'.format(**inv_log_data))
             invoice.signal_workflow('invoice_cancel')
 
     def _unpost_vouchers(self):
@@ -126,10 +126,10 @@ class AccountResetWizard(models.Model):
         try:
             AccountVoucher = self.env['account.voucher']
         except KeyError:
-            _logger.warning("{prefix} account.voucher model not present - skipping voucher cancellation".format(**log_data))
+            _logger.warning(u"{prefix} account.voucher model not present - skipping voucher cancellation".format(**log_data))
             return
         vouchers = AccountVoucher.search([('state', '=', 'posted'), ('company_id', '=', company.id)])
-        _logger.info('{prefix} {count} vouchers to cancel'.format(
+        _logger.info(u'{prefix} {count} vouchers to cancel'.format(
             count=len(vouchers), **log_data
         ))
         for voucher in vouchers:
@@ -137,9 +137,9 @@ class AccountResetWizard(models.Model):
             inv_log_data.update(dict(voucher_name=voucher.display_name or "*no name*", voucher_id=voucher.id))
             journal = voucher.journal_id
             if not journal.update_posted:
-                _logger.info('{prefix} Skipping Voucher {voucher_id} "{voucher_name}" - it is in uncancellable journal {journal_name}'.format(journal_name=journal.name, **inv_log_data))
+                _logger.info(u'{prefix} Skipping Voucher {voucher_id} "{voucher_name}" - it is in uncancellable journal {journal_name}'.format(journal_name=journal.name, **inv_log_data))
                 continue
-            _logger.info('{prefix} cancelling voucher {voucher_id} "{voucher_name}"'.format(**inv_log_data))
+            _logger.info(u'{prefix} cancelling voucher {voucher_id} "{voucher_name}"'.format(**inv_log_data))
             voucher.cancel_voucher()
 
 
